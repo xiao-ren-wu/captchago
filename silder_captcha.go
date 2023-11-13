@@ -2,7 +2,8 @@ package captchago
 
 import (
 	"fmt"
-	"github.com/xiao-ren-wu/captchago/captcha_embed"
+	"github.com/xiao-ren-wu/captchago/capembed"
+	"github.com/xiao-ren-wu/captchago/caps"
 	"github.com/xiao-ren-wu/captchago/util"
 	"golang.org/x/image/colornames"
 	"image/color"
@@ -20,18 +21,37 @@ type SliderCaptchaData struct {
 
 type SliderCaptcha struct {
 	// 图片资源库
-	fr  *captcha_embed.FileResources
+	fr  *capembed.FileResources
 	wmc *waterMarkCfg
 }
 
-func NewSliderCaptcha() *SliderCaptcha {
-	return &SliderCaptcha{
-		fr: captcha_embed.DefaultFileResource,
+func (c SliderCaptcha) setOps(ops []caps.CaptchaOp) {
+	var cfg caps.CaptchaCfg
+	for _, op := range ops {
+		op(&cfg)
+	}
+	if cfg.Text != nil {
+		c.wmc.text = *cfg.Text
+		if cfg.FontSize != nil {
+			c.wmc.fontSize = *cfg.FontSize
+		}
+		if cfg.Offset != nil {
+			c.wmc.offset = *cfg.Offset
+		}
+	}
+}
+
+func NewSliderCaptcha(ops ...caps.CaptchaOp) *SliderCaptcha {
+	slc := &SliderCaptcha{
+		fr: capembed.DefaultFileResource,
 		wmc: &waterMarkCfg{
 			fontSize: 20,
 			color:    color.RGBA{R: 255, G: 255, B: 255, A: 255},
+			offset:   5,
 		},
 	}
+	slc.setOps(ops)
+	return slc
 }
 
 func (sc *SliderCaptcha) Get() (*SliderCaptchaData, error) {
@@ -67,7 +87,7 @@ func (sc *SliderCaptcha) Get() (*SliderCaptchaData, error) {
 	}, nil
 }
 
-func (sc *SliderCaptcha) pictureTemplatesCut(sr *captcha_embed.SliderResource) int {
+func (sc *SliderCaptcha) pictureTemplatesCut(sr *capembed.SliderResource) int {
 	// 生成拼图坐标点
 	x := sc.randPoint(sr.BKImg, sr.SliImg)
 	// 裁剪模板图
@@ -87,7 +107,7 @@ func (sc *SliderCaptcha) pictureTemplatesCut(sr *captcha_embed.SliderResource) i
 	return x
 }
 
-func (sc *SliderCaptcha) cutByTemplate(backgroundImage, templateImage *captcha_embed.ImgResource, x1 int) {
+func (sc *SliderCaptcha) cutByTemplate(backgroundImage, templateImage *capembed.ImgResource, x1 int) {
 	xLength := templateImage.Width
 	yLength := templateImage.Height
 	for x := 0; x < xLength; x++ {
@@ -127,7 +147,7 @@ func (sc *SliderCaptcha) cutByTemplate(backgroundImage, templateImage *captcha_e
 }
 
 // 生成模板图在背景图中的随机坐标点
-func (sc *SliderCaptcha) randPoint(bkImg, sliImg *captcha_embed.ImgResource) (x int) {
+func (sc *SliderCaptcha) randPoint(bkImg, sliImg *capembed.ImgResource) (x int) {
 	x = util.RandomInt(sliImg.Width+10, bkImg.Width-sliImg.Width)
 	return x
 }

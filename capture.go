@@ -3,7 +3,7 @@ package captchago
 import (
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
-	"github.com/xiao-ren-wu/captchago/captcha_embed"
+	"github.com/xiao-ren-wu/captchago/capembed"
 	"image"
 	"image/color"
 	"unicode"
@@ -16,10 +16,12 @@ type waterMarkCfg struct {
 	color color.RGBA
 	// 水印内容
 	text string
+	// 文件位置微调，由于文字宽度，需要根据具体水印进行微调
+	offset int
 }
 
 type waterMark struct {
-	imgResource *captcha_embed.ImgResource
+	imgResource *capembed.ImgResource
 	fontRes     *truetype.Font
 	*waterMarkCfg
 }
@@ -56,7 +58,7 @@ func (c *waterMark) waterMarkLen() int {
 			enCount++
 		}
 	}
-	chOffset := (25/2)*zhCount + 5
-	enOffset := enCount * 8
-	return chOffset + enOffset
+	chOffset := c.fontSize * zhCount
+	enOffset := c.fontSize * enCount
+	return chOffset + enOffset + c.offset
 }

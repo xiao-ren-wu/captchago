@@ -3,12 +3,13 @@ package captchago_test
 import (
 	"encoding/base64"
 	"github.com/xiao-ren-wu/captchago"
+	"github.com/xiao-ren-wu/captchago/caps"
 	"os"
 	"testing"
 )
 
 func TestGenSliderCaptcha(t *testing.T) {
-	captcha := captchago.NewSliderCaptcha()
+	captcha := captchago.NewSliderCaptcha(caps.WaterMark("hello"), caps.WaterMarkOffset(-50))
 	captchaData, err := captcha.Get()
 	if err != nil {
 		t.Fatal(err)

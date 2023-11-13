@@ -1,4 +1,4 @@
-package captcha_embed
+package capembed
 
 import (
 	"testing"

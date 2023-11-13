@@ -1,4 +1,4 @@
-package captcha_embed
+package capembed
 
 import (
 	"bytes"
@@ -78,10 +78,10 @@ func (i *ImgResource) VagueImage(x int, y int) {
 		}
 
 		r, g, b, a := i.RgbaImage.RGBAAt(pointX, pointY).RGBA()
-		red += r >> 8
-		green += g >> 8
-		blue += b >> 8
-		alpha += a >> 8
+		red += r >> 9
+		green += g >> 9
+		blue += b >> 9
+		alpha += a >> 9
 
 	}
 
