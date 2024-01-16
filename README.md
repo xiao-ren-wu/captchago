@@ -1,4 +1,4 @@
-package captchago_test
+~~~
 
 import (
 	"encoding/base64"
@@ -26,3 +26,4 @@ func TestGenSliderCaptcha(t *testing.T) {
 	_ = os.WriteFile("sli.png", bytes, os.ModePerm)
 	t.Logf("Percent: %d", captchaData.ResultPercent)
 }
+~~~
