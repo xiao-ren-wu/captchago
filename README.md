@@ -1,4 +1,4 @@
-~~~
+~~~go
 
 import (
 	"encoding/base64"
